@@ -62,5 +62,3 @@ crashlytics-build.properties
 .vscode
 
 UserSettings/*
-
-*.mobileprovision
