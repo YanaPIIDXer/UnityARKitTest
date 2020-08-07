@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Linq;
+using System.IO;
 
 /// <summary>
 /// ビルドパイプライン
@@ -12,8 +14,17 @@ public class GameBuildPipeline
     [MenuItem("GameBuildPipeline/iOS Build")]
     public static void BuildForIOS()
     {
-        string TargetPath = "Builds/UnityARKitTest";
-        string[] Levels = new string[] { "SampleScene" };
-        Debug.Log(TargetPath);
-    }
+		var Options = new BuildPlayerOptions();
+        Options.locationPathName = "Builds/UnityARKitTest";
+        Options.scenes = AssetDatabase.GetAllAssetPaths().Where(_ => Path.GetExtension(_) == ".unity").ToArray();
+		Options.target = BuildTarget.iOS;
+		Options.options = BuildOptions.Development;
+		
+		var Summary = BuildPipeline.BuildPlayer(Options).summary;
+		if(Summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+		{
+			Debug.Log("Fuck!!");
+			return;
+		}
+	}
 }
