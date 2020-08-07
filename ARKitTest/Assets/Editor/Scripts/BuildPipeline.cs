@@ -1,5 +1,19 @@
-﻿using UnityEditor;
+﻿using UnityEngine;
+using UnityEditor;
 
-public class BuildPipeline
+/// <summary>
+/// ビルドパイプライン
+/// </summary>
+public class GameBuildPipeline
 {
+    /// <summary>
+    /// iOSビルド
+    /// </summary>
+    [MenuItem("GameBuildPipeline/iOS Build")]
+    public static void BuildForIOS()
+    {
+        string TargetPath = "Builds/UnityARKitTest";
+        string[] Levels = new string[] { "SampleScene" };
+        Debug.Log(TargetPath);
+    }
 }
