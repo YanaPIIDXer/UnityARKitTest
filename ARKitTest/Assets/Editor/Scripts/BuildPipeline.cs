@@ -98,7 +98,12 @@ public class GameBuildPipeline
         SftpClient Client = new SftpClient(ConnInfo);
         try
         {
-            Client.Connect();
+            var ConnTask = Task.Run(() => Client.Connect());
+            while (!ConnTask.IsCompleted)
+            {
+                EditorUtility.DisplayProgressBar("Upload XCode Project", "Connecting SFTP...", 0.0f);
+            }
+            EditorUtility.ClearProgressBar();
         }
         catch
         {
