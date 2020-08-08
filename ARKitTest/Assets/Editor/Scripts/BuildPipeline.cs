@@ -70,7 +70,6 @@ public class GameBuildPipeline
 	/// <returns>成功したか？</returns>
     private static bool UploadXCodeProject()
     {
-        Debug.Log("SSH Connection...");
         using (var Client = MakeSFTPConnection(LocalSettings.SSHHost, LocalSettings.SSHUserName, LocalSettings.SSHPassword))
         {
             if (Client == null)
@@ -78,7 +77,8 @@ public class GameBuildPipeline
                 Debug.Log("Connection Failed...");
                 return false;
             }
-            Debug.Log("Connection Success!");
+
+            DeleteOldProjectDirectory(Client);
         }
 
         return true;
@@ -110,6 +110,24 @@ public class GameBuildPipeline
             return null;
         }
         return Client;
+    }
+
+    /// <summary>
+    /// 古いXCodeのプロジェクトディレクトリを削除。
+    /// </summary>
+    /// <param name="Client">SftpClientのインスタンス</param>
+    private static void DeleteOldProjectDirectory(SftpClient Client)
+    {
+        if (!Client.Exists("UnityARKitTest")) { return; }
+
+        var RemoveTask = Task.Run(() => DeleteDirectory(Client, "UnityARKitTest"));
+        while (!RemoveTask.IsCompleted)
+        {
+            EditorUtility.DisplayProgressBar("Upload XCode Project", "Deleting Old Project Directory...", 0.0f);
+        }
+        EditorUtility.ClearProgressBar();
+
+        Debug.Log("Old Project Directory Deleted.");
     }
 
     /// <summary>
