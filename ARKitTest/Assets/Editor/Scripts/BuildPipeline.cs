@@ -3,6 +3,8 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using System.Collections.Generic;
@@ -65,10 +67,11 @@ public class GameBuildPipeline
     /// <summary>
     /// XCodeのプロジェクトをアップロード
     /// </summary>
+	/// <returns>成功したか？</returns>
     private static bool UploadXCodeProject()
     {
         Debug.Log("SSH Connection...");
-        using (var Client = MakeSSHConnection(LocalSettings.SSHHost, LocalSettings.SSHUserName, LocalSettings.SSHPassword))
+        using (var Client = MakeSFTPConnection(LocalSettings.SSHHost, LocalSettings.SSHUserName, LocalSettings.SSHPassword))
         {
             if (Client == null)
             {
@@ -82,17 +85,17 @@ public class GameBuildPipeline
     }
 
     /// <summary>
-    /// SSH接続
+    /// SFTP接続
     /// </summary>
     /// <param name="Host">ホスト</param>
     /// <param name="UserName">ユーザ名</param>
     /// <param name="Password">パスワード</param>
-    /// <returns>SshClinetのインスタンス</returns>
-    private static SshClient MakeSSHConnection(string Host, string UserName, string Password)
+    /// <returns>SftpClinetのインスタンス</returns>
+    private static SftpClient MakeSFTPConnection(string Host, string UserName, string Password)
     {
         var AuthMethod = new PasswordAuthenticationMethod(UserName, Password);
         var ConnInfo = new ConnectionInfo(Host, UserName, AuthMethod);
-        SshClient Client = new SshClient(ConnInfo);
+        SftpClient Client = new SftpClient(ConnInfo);
         try
         {
             Client.Connect();
