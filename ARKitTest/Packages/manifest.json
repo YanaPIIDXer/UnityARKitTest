@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.kyrylokuzyk.arfoundationremote": "https://kuzykkirill:gXfNFPSZ1sfx3PsiMxPz@gitlab.com/kuzykkirill/arfoundationremote.git#4b6b22e1085165b709d7a175a39c9ef037fd3a9c",
     "com.unity.collab-proxy": "1.3.8",
     "com.unity.ide.rider": "1.2.1",
     "com.unity.ide.visualstudio": "2.0.2",
