@@ -62,3 +62,10 @@ crashlytics-build.properties
 UserSettings/*
 Assets/Editor/Scripts/LocalSettings.cs
 Assets/Editor/Scripts/LocalSettings.cs.meta
+
+# 有料アセット。Githubに上げると社会的に死ぬやつ。
+# ※流石にSettingsディレクトリの中のもの（設定ファイル？）は問題ないだろう。
+Assets/Plugins/ARFoundationRemoteInstaller
+Assets/Plugins/ARFoundationRemoteInstaller.meta
+Assets/XR/Loaders/AR Foundation Remote Loader.asset
+Assets/XR/Loaders/AR Foundation Remote Loader.asset.meta
