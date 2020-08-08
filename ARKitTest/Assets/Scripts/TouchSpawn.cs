@@ -16,6 +16,12 @@ namespace ARKitTest
         /// </summary>
         private ARRaycastManager Raycast = null;
 
+        /// <summary>
+        /// 生成するオブジェクトのPrefab
+        /// </summary>
+        [SerializeField]
+        private GameObject SpawnPrefab = null;
+
         protected void Awake()
         {
             Raycast = GetComponent<ARRaycastManager>();
@@ -30,7 +36,7 @@ namespace ARKitTest
 
             List<ARRaycastHit> Hits = new List<ARRaycastHit>();
             if (!Raycast.Raycast(Info.position, Hits)) { return; }
-            Debug.Log(Hits[0].pose.position);
+            Instantiate(SpawnPrefab, Hits[0].pose.position, Quaternion.identity);
         }
     }
 }
