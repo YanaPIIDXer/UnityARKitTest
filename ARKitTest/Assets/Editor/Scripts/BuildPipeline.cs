@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Linq;
+using System;
 using System.IO;
+using System.Linq;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using System.Collections.Generic;
@@ -25,6 +26,10 @@ public class GameBuildPipeline
     /// </summary>
     private static void RunBuildPipline()
     {
+        Debug.Log("Start Build.");
+
+        // ↓XCodeプロジェクト転送処理実装の為一旦封印。
+        /*
         var Options = new BuildPlayerOptions();
         Options.locationPathName = "Builds/UnityARKitTest";
         Options.scenes = AssetDatabase.GetAllAssetPaths().Where(_ => Path.GetExtension(_) == ".unity").ToArray();
@@ -33,10 +38,6 @@ public class GameBuildPipeline
 
         string PrevTeamID = PlayerSettings.iOS.appleDeveloperTeamID;
 
-        Debug.Log("Start Build.");
-
-        // ↓XCodeプロジェクト転送処理実装の為一旦封印。
-        /*
         var Summary = BuildPipeline.BuildPlayer(Options).summary;
 
         PlayerSettings.iOS.appleDeveloperTeamID = PrevTeamID;
@@ -48,7 +49,6 @@ public class GameBuildPipeline
             return;
         }
 		*/
-
         Debug.Log("Build Success!");
 
         Debug.Log("Upload XCode Project.");
@@ -67,7 +67,41 @@ public class GameBuildPipeline
     /// </summary>
     private static bool UploadXCodeProject()
     {
+        Debug.Log("SSH Connection...");
+        using (var Client = MakeSSHConnection(LocalSettings.SSHHost, LocalSettings.SSHUserName, LocalSettings.SSHPassword))
+        {
+            if (Client == null)
+            {
+                Debug.Log("Connection Failed...");
+                return false;
+            }
+            Debug.Log("Connection Success!");
+        }
+
         return true;
+    }
+
+    /// <summary>
+    /// SSH接続
+    /// </summary>
+    /// <param name="Host">ホスト</param>
+    /// <param name="UserName">ユーザ名</param>
+    /// <param name="Password">パスワード</param>
+    /// <returns>SshClinetのインスタンス</returns>
+    private static SshClient MakeSSHConnection(string Host, string UserName, string Password)
+    {
+        var AuthMethod = new PasswordAuthenticationMethod(UserName, Password);
+        var ConnInfo = new ConnectionInfo(Host, UserName, AuthMethod);
+        SshClient Client = new SshClient(ConnInfo);
+        try
+        {
+            Client.Connect();
+        }
+        catch
+        {
+            return null;
+        }
+        return Client;
     }
 
     /// <summary>
